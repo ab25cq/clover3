@@ -1,6 +1,6 @@
 # Clover3 computer language
 
-version 1.0.6
+version 0.0.1
 
 * 特徴
 
