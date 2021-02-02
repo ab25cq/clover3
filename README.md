@@ -1,4 +1,4 @@
-# Clover3 computer language
+# Clover3 script language
 
 version 0.0.1
 
