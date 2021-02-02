@@ -1,4 +1,4 @@
-AC_INIT(src/compiler.c)
+AC_INIT(src/compiler.nc)
 
 AC_CONFIG_HEADER(config.h)
 
@@ -183,6 +183,11 @@ if test $DEBUGGING = 1
 then
     CFLAGS="$CFLAGS -g -DMDEBUG"
     #CFLAGS="$CFLAGS -g -DMDEBUG -Werror"
+fi
+
+if test $ENABLE_MLDEBUG = 1
+then
+    NCFLAGS="-gm"
 fi
 
 AC_SUBST(OS)

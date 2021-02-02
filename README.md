@@ -1,4 +1,4 @@
-# SevenStars computer language
+# Clover3 computer language
 
 version 1.0.6
 

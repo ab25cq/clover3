@@ -2,8 +2,6 @@
 #define COMMON_H 
 #include "config.h"
 
-#include "neo-c.h"
-
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>

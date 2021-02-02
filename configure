@@ -582,7 +582,7 @@ PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 PACKAGE_URL=
 
-ac_unique_file="src/compiler.c"
+ac_unique_file="src/compiler.nc"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -3892,6 +3892,11 @@ if test $DEBUGGING = 1
 then
     CFLAGS="$CFLAGS -g -DMDEBUG"
     #CFLAGS="$CFLAGS -g -DMDEBUG -Werror"
+fi
+
+if test $ENABLE_MLDEBUG = 1
+then
+    NCFLAGS="-gm"
 fi
 
 

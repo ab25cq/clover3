@@ -20,6 +20,7 @@ libdir=@libdir@
 CC=@CC@
 INSTALL=@INSTALL@
 CFLAGS=@CFLAGS@
+NCFLAGS=@NCFLAGS@
 LIBS=@LIBS@
 OS=@OS@
 DESTDIR=@DESTDIR@
@@ -30,95 +31,73 @@ COMPILER_OBJS=@COMPILER_OBJS@
 # main
 ##########################################################
 all: clover3 core
+#	if which ctags > /dev/null; then if test $(OS) = DARWIN; then ctags src/*.c > /dev/null 2>&1; else ctags -R; fi; fi
 
 core: core.ss
 	./clover3 -core core.ss
 
-clover3: config.h src/*.h Makefile configure src/main.o src/compiler.o src/interpreter.o src/parser.o src/node.o src/type.o src/class.o src/native.o src/native2.o src/native3.o src/native4.o src/native5.o src/native6.o src/vm.o src/vtable.o src/heap.o src/object.o src/block.o src/macro.o
-	clang -o clover3 src/main.o src/compiler.o src/interpreter.o src/parser.o src/node.o src/type.o src/class.o src/native.o src/native2.o src/native3.o src/native4.o src/native5.o src/native6.o src/vm.o src/vtable.o src/heap.o src/object.o src/block.o src/macro.o $(CFLAGS) $(LIBS)
+clover3: config.h src/*.h Makefile configure src/main.nc src/compiler.o src/interpreter.o src/parser.o src/node.o src/type.o src/class.o src/native.o src/native2.o src/native3.o src/native4.o src/native5.o src/native6.o src/vm.o src/vtable.o src/heap.o src/object.o src/block.o src/macro.o
+	$(CC) -o clover3 src/main.nc src/compiler.o src/interpreter.o src/parser.o src/node.o src/type.o src/class.o src/native.o src/native2.o src/native3.o src/native4.o src/native5.o src/native6.o src/vm.o src/vtable.o src/heap.o src/object.o src/block.o src/macro.o $(CFLAGS) $(NCFLAGS) $(LIBS)
 
 ##########################################################
 # objects
 ##########################################################
-src/main.o: config.h src/*.h Makefile configure src/main.c
-	neo-c src/main.c $(CFLAGS) 
-	clang -c -o src/main.o src/main.c.ll
+src/compiler.o: config.h src/*.h Makefile configure src/compiler.nc
+	$(CC) -c src/compiler.nc $(CFLAGS) $(NCFLAGS)
 
-src/compiler.o: config.h src/*.h Makefile configure src/compiler.c
-	neo-c src/compiler.c $(CFLAGS) 
-	clang -c -o src/compiler.o src/compiler.c.ll
+src/interpreter.o: config.h src/*.h Makefile configure src/interpreter.nc
+	$(CC) -c src/interpreter.nc $(CFLAGS) $(NCFLAGS) -I/opt/local/include
 
-src/interpreter.o: config.h src/*.h Makefile configure src/interpreter.c
-	neo-c src/interpreter.c $(CFLAGS) 
-	clang -c -o src/interpreter.o src/interpreter.c.ll
+src/parser.o: config.h src/*.h Makefile configure src/parser.nc
+	$(CC) -c src/parser.nc $(CFLAGS) $(NCFLAGS)
 
-src/parser.o: config.h src/*.h Makefile configure src/parser.c
-	neo-c src/parser.c $(CFLAGS) 
-	clang -c -o src/parser.o src/parser.c.ll
+src/node.o: config.h src/*.h Makefile configure src/node.nc
+	$(CC) -c src/node.nc $(CFLAGS) $(NCFLAGS)
 
-src/node.o: config.h src/*.h Makefile configure src/node.c
-	neo-c src/node.c $(CFLAGS) 
-	clang -c -o src/node.o src/node.c.ll
+src/type.o: config.h src/*.h Makefile configure src/type.nc
+	$(CC) -c src/type.nc $(CFLAGS) $(NCFLAGS)
 
-src/type.o: config.h src/*.h Makefile configure src/type.c
-	neo-c src/type.c $(CFLAGS) 
-	clang -c -o src/type.o src/type.c.ll
+src/class.o: config.h src/*.h Makefile configure src/class.nc
+	$(CC) -c src/class.nc $(CFLAGS) $(NCFLAGS)  || clang -c -o src/class.o src/class.ll
 
-src/class.o: config.h src/*.h Makefile configure src/class.c
-	neo-c src/class.c $(CFLAGS) 
-	clang -c -o src/class.o src/class.c.ll
+src/native.o: config.h src/*.h Makefile configure src/native.nc
+	$(CC) -c src/native.nc $(CFLAGS) $(NCFLAGS) || clang -c -o src/native.o src/native.ll
 
-src/native.o: config.h src/*.h Makefile configure src/native.c
-	neo-c src/native.c $(CFLAGS) 
-	clang -c -o src/native.o src/native.c.ll
+src/native2.o: config.h src/*.h Makefile configure src/native2.nc
+	$(CC) -c src/native2.nc $(CFLAGS) $(NCFLAGS) || clang -c -o src/native2.o src/native2.ll
 
-src/native2.o: config.h src/*.h Makefile configure src/native2.c
-	neo-c src/native2.c $(CFLAGS) 
-	clang -c -o src/native2.o src/native2.c.ll
+src/native3.o: config.h src/*.h Makefile configure src/native3.nc
+	$(CC) -c src/native3.nc $(CFLAGS) $(NCFLAGS) || clang -c -o src/native3.o src/native3.ll
 
-src/native3.o: config.h src/*.h Makefile configure src/native3.c
-	neo-c src/native3.c $(CFLAGS) 
-	clang -c -o src/native3.o src/native3.c.ll
+src/native4.o: config.h src/*.h Makefile configure src/native4.nc
+	$(CC) -c src/native4.nc $(CFLAGS) $(NCFLAGS) || clang -c -o src/native4.o src/native4.ll
 
-src/native4.o: config.h src/*.h Makefile configure src/native4.c
-	neo-c src/native4.c $(CFLAGS) 
-	clang -c -o src/native4.o src/native4.c.ll
+src/native5.o: config.h src/*.h Makefile configure src/native5.nc
+	$(CC) -c src/native5.nc $(CFLAGS) $(NCFLAGS) || clang -c -o src/native5.o src/native5.ll
 
-src/native5.o: config.h src/*.h Makefile configure src/native5.c
-	neo-c src/native5.c $(CFLAGS) 
-	clang -c -o src/native5.o src/native5.c.ll
+src/native6.o: config.h src/*.h Makefile configure src/native6.nc
+	$(CC) -c src/native6.nc $(CFLAGS) $(NCFLAGS) || clang -c -o src/native6.o src/native6.ll
 
-src/native6.o: config.h src/*.h Makefile configure src/native6.c
-	neo-c src/native6.c $(CFLAGS) 
-	clang -c -o src/native6.o src/native6.c.ll
+src/vm.o: config.h src/*.h Makefile configure src/vm.nc
+	$(CC) -c src/vm.nc $(CFLAGS) $(NCFLAGS) || clang -c -o src/vm.o src/vm.ll
 
-src/vm.o: config.h src/*.h Makefile configure src/vm.c
-	neo-c src/vm.c $(CFLAGS) 
-	clang -c -o src/vm.o src/vm.c.ll
+src/vtable.o: config.h src/*.h Makefile configure src/vtable.nc
+	$(CC) -c src/vtable.nc $(CFLAGS) $(NCFLAGS)
 
-src/vtable.o: config.h src/*.h Makefile configure src/vtable.c
-	neo-c src/vtable.c $(CFLAGS) 
-	clang -c -o src/vtable.o src/vtable.c.ll
+src/objet.o: config.h src/*.h Makefile configure src/object.nc
+	$(CC) -c src/object.nc $(CFLAGS) $(NCFLAGS)
 
-src/objet.o: config.h src/*.h Makefile configure src/object.c
-	neo-c src/object.c $(CFLAGS) 
-	clang -c -o src/object.o src/object.c.ll
+src/heap.o: config.h src/*.h Makefile configure src/heap.nc
+	$(CC) -c src/heap.nc $(CFLAGS) $(NCFLAGS)
 
-src/heap.o: config.h src/*.h Makefile configure src/heap.c
-	neo-c src/heap.c $(CFLAGS) 
-	clang -c -o src/heap.o src/heap.c.ll
+src/object.o: config.h src/*.h Makefile configure src/object.nc
+	$(CC) -c src/object.nc $(CFLAGS) $(NCFLAGS)
 
-src/object.o: config.h src/*.h Makefile configure src/object.c
-	neo-c src/object.c $(CFLAGS) 
-	clang -c -o src/object.o src/object.c.ll
+src/block.o: config.h src/*.h Makefile configure src/block.nc
+	$(CC) -c src/block.nc $(CFLAGS) $(NCFLAGS)
 
-src/block.o: config.h src/*.h Makefile configure src/block.c
-	neo-c src/block.c $(CFLAGS) 
-	clang -c -o src/block.o src/block.c.ll
-
-src/macro.o: config.h src/*.h Makefile configure src/macro.c
-	neo-c src/macro.c $(CFLAGS) 
-	clang -c -o src/macro.o src/macro.c.ll
+src/macro.o: config.h src/*.h Makefile configure src/macro.nc
+	$(CC) -c src/macro.nc $(CFLAGS) $(NCFLAGS)
 
 #########################################################
 # install
@@ -169,7 +148,7 @@ permission:
 # clean
 ########################################################
 clean:
-	rm -fR clover3 clover3.dSYM src/*.o src/*.out src/*.bc src/*.ll config.log config.status *.stackdump autom4te.cache .DS_Store core a.out *.out *.ssc memleak_debug.txt src/*.i
+	rm -fR clover3 sevenstar.dSYM src/*.o src/*.out src/*.bc src/*.ll config.log config.status *.stackdump autom4te.cache .DS_Store core a.out *.out *.ssc memleak_debug.txt
 
 distclean: clean
 	rm -fR  config.h Makefile autom4te.cache
@@ -179,5 +158,5 @@ distclean: clean
 ########################################################
 test: 
 	@echo "Compile to test code..."
-	valgrind ./clover3 code/HelloWorld.ss
+	./clover3 code/HelloWorld.ss
 

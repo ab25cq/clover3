@@ -24,7 +24,7 @@ void* alloc_mem_from_page(unsigned int size, bool* malloced)
 {
     if(size >= GC_PAGE_SIZE) {
         *malloced = true;
-        return calloc(1, size);
+        return borrow nccalloc(1, size);
     }
 
     if(gHeapPages[gNumHeapPages].mOffset + size >= GC_PAGE_SIZE) {
@@ -33,14 +33,14 @@ void* alloc_mem_from_page(unsigned int size, bool* malloced)
         if(gNumHeapPages == gSizeHeapPages) {
             int new_size = gSizeHeapPages * 2;
 
-            gHeapPages = realloc(gHeapPages, sizeof(sHeapPage)*new_size);
+            gHeapPages = borrow ncrealloc(gHeapPages, sizeof(sHeapPage)*new_size);
 
             memset(gHeapPages + gSizeHeapPages, 0, sizeof(sHeapPage)*(new_size-gSizeHeapPages));
 
             gSizeHeapPages = new_size;
         }
 
-        gHeapPages[gNumHeapPages].mMem = calloc(1, GC_PAGE_SIZE);
+        gHeapPages[gNumHeapPages].mMem = borrow nccalloc(1, GC_PAGE_SIZE);
         gHeapPages[gNumHeapPages].mOffset = 0;
     }
 
@@ -79,8 +79,8 @@ void compaction()
     unsigned int heap_page_offset = 0;
 
     int size_heap_pages = gSizeHeapPages * 2;
-    char** pages = calloc(1, sizeof(char*)*size_heap_pages);
-    pages[num_heap_pages] = calloc(1, GC_PAGE_SIZE);
+    char** pages = borrow nccalloc(1, sizeof(char*)*size_heap_pages);
+    pages[num_heap_pages] = borrow nccalloc(1, GC_PAGE_SIZE);
 
     gCLHeap.mFreeMemHandles = -1;
 
@@ -99,13 +99,13 @@ void compaction()
                 if(heap_page_offset + size >= GC_PAGE_SIZE) {
                     num_heap_pages++;
 
-                    pages[num_heap_pages] = calloc(1, GC_PAGE_SIZE);
+                    pages[num_heap_pages] = borrow nccalloc(1, GC_PAGE_SIZE);
                     heap_page_offset = 0;
 
                     if(num_heap_pages == size_heap_pages) {
                         int new_size = size_heap_pages * 2;
 
-                        pages = realloc(pages, sizeof(char*)*new_size);
+                        pages = borrow ncrealloc(pages, sizeof(char*)*new_size);
 
                         memset(pages + size_heap_pages, 0, sizeof(char*)*(new_size-size_heap_pages));
 
@@ -124,7 +124,7 @@ void compaction()
         }
         else {
             if(gCLHeap.mHandles[i].mMalloced) {
-                free(gCLHeap.mHandles[i].mMem);
+                ncfree(gCLHeap.mHandles[i].mMem);
             }
 
             gCLHeap.mHandles[i].mMem = NULL;
@@ -143,13 +143,13 @@ void compaction()
     }
 
     for(i=0; i<=gNumHeapPages; i++) {
-        free(gHeapPages[i].mMem);
+        ncfree(gHeapPages[i].mMem);
     }
 
     if(num_heap_pages >= gSizeHeapPages) {
         int new_size = (gSizeHeapPages+num_heap_pages) * 2;
 
-        gHeapPages = realloc(gHeapPages, sizeof(sHeapPage)*new_size);
+        gHeapPages = borrow ncrealloc(gHeapPages, sizeof(sHeapPage)*new_size);
 
         memset(gHeapPages + gSizeHeapPages, 0, sizeof(sHeapPage)*(new_size-gSizeHeapPages));
 
@@ -164,16 +164,16 @@ void compaction()
     gHeapPages[num_heap_pages].mOffset = heap_page_offset;
     gNumHeapPages = num_heap_pages;
 
-    free(pages);
+    ncfree(pages);
 }
 
 void heap_init(int heap_size, int size_handles)
 {
-    gCLHeap.mHandles = calloc(1, sizeof(sHandle)*size_handles);
+    gCLHeap.mHandles = borrow nccalloc(1, sizeof(sHandle)*size_handles);
 
     gCLHeap.mSizeHandles = size_handles;
 
-    gCLHeap.mMarkFlags = calloc(1, sizeof(unsigned char)*gCLHeap.mSizeHandles);
+    gCLHeap.mMarkFlags = borrow nccalloc(1, sizeof(unsigned char)*gCLHeap.mSizeHandles);
 
     gCLHeap.mFreeHandles = -1;
 
@@ -190,10 +190,10 @@ void heap_init(int heap_size, int size_handles)
     gCLHeap.mFreeMemHandles = -1;
 
     gSizeHeapPages = GC_INIT_PAGE_NUM;
-    gHeapPages = calloc(1, sizeof(sHeapPage)*gSizeHeapPages);
+    gHeapPages = borrow nccalloc(1, sizeof(sHeapPage)*gSizeHeapPages);
 
     gNumHeapPages = 0;
-    gHeapPages[0].mMem = calloc(1, GC_PAGE_SIZE);
+    gHeapPages[0].mMem = borrow nccalloc(1, GC_PAGE_SIZE);
     gHeapPages[0].mOffset = 0;
 }
 
@@ -204,11 +204,11 @@ void heap_final()
     delete_all_object();
     int i;
     for(i=0; i<=gNumHeapPages; i++) {
-        free(gHeapPages[i].mMem);
+        ncfree(gHeapPages[i].mMem);
     }
-    free(gCLHeap.mMarkFlags);
-    free(gHeapPages);
-    free(gCLHeap.mHandles);
+    ncfree(gCLHeap.mMarkFlags);
+    ncfree(gHeapPages);
+    ncfree(gCLHeap.mHandles);
 }
 
 
@@ -245,7 +245,7 @@ static void free_handle(unsigned int handle_num)
         gCLHeap.mHandles[handle_num].mNoneFreeHandle = false;
 
         if(gCLHeap.mHandles[handle_num].mMalloced) {
-            free(gCLHeap.mHandles[handle_num].mMem);
+            ncfree(gCLHeap.mHandles[handle_num].mMem);
 
             gCLHeap.mHandles[handle_num].mMem = NULL;
             gCLHeap.mHandles[handle_num].mMalloced = false;
@@ -350,7 +350,7 @@ static void free_malloced_memory()
     for(i=0; i<gCLHeap.mSizeHandles; i++) {
         if(gCLHeap.mHandles[i].mNoneFreeHandle) {
             if(gCLHeap.mHandles[i].mMalloced) {
-                free(gCLHeap.mHandles[i].mMem);
+                ncfree(gCLHeap.mHandles[i].mMem);
             }
         }
     }
@@ -422,10 +422,10 @@ CLObject alloc_heap_mem(unsigned int size, sCLType* type, int field_num, sVMInfo
         if(handle == -1) {
             const int new_offset_size = (gCLHeap.mSizeHandles + 1) * 2;
 
-            gCLHeap.mHandles = realloc(gCLHeap.mHandles, sizeof(sHandle)*new_offset_size);
+            gCLHeap.mHandles = borrow ncrealloc(gCLHeap.mHandles, sizeof(sHandle)*new_offset_size);
             memset(gCLHeap.mHandles + gCLHeap.mSizeHandles, 0, sizeof(sHandle)*(new_offset_size - gCLHeap.mSizeHandles));
 
-            gCLHeap.mMarkFlags = realloc(gCLHeap.mMarkFlags, sizeof(unsigned char)*new_offset_size);
+            gCLHeap.mMarkFlags = borrow ncrealloc(gCLHeap.mMarkFlags, sizeof(unsigned char)*new_offset_size);
             memset(gCLHeap.mMarkFlags + gCLHeap.mSizeHandles, 0, sizeof(unsigned char)*(new_offset_size - gCLHeap.mSizeHandles));
 
             /// chain free handles ///
