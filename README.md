@@ -9,11 +9,11 @@ version 1.0.6
 1. It can be used as a shell with method name and file name completion.
 
 ```
-sevenstars > ls().le[TAB]
-sevenstars > ls().less(
+clover3 > ls().le[TAB]
+clover3 > ls().less(
 
-sevenstars > 1.to_s[TAB]
-sevenstars > 1.to_string(
+clover3 > 1.to_s[TAB]
+clover3 > 1.to_string(
 ```
 
 2. 外部コマンドを簡単に実行できます。
@@ -21,7 +21,7 @@ sevenstars > 1.to_string(
 2. You can easily execute external commands.
 
 ```
-sevenstars > map!("AAA", 1, "BBB", 2).to_string().to_command().less()
+clover3 > map!("AAA", 1, "BBB", 2).to_string().to_command().less()
 ```
 
 3. 静的型と動的型の両方を持ちます。内部的には仮想マシーンが動いており、コンパイルを行っております。
@@ -33,10 +33,10 @@ sevenstars > map!("AAA", 1, "BBB", 2).to_string().to_command().less()
 4. It is also an object-oriented language. Includes classes, inheritance, generics, collections, etc.
 
 ```
-sevenstars > list!(1,2,3,4,5).filter() { it > 3 }
+clover3 > list!(1,2,3,4,5).filter() { it > 3 }
 =>list(4,5)
 
-sevenstars > list!(1,2,3,4,5).map() { it * 2 }
+clover3 > list!(1,2,3,4,5).map() { it * 2 }
 =>list(2,4,6,8,10)
 ```
 
@@ -72,8 +72,8 @@ save_class ClassA;
 6. You can easily get standard input on command line.
 
 ```
-$ ls -al | sevenstars -c '.wc("-l")'
-$ ls -al | sevenstars -c '.to_string().scan(/./).join("+").print()'
+$ ls -al | clover3 -c '.wc("-l")'
+$ ls -al | clover3 -c '.to_string().scan(/./).join("+").print()'
 ```
 
 * マニュアル(manual)

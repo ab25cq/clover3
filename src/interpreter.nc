@@ -406,7 +406,7 @@ void shell(vector<sCLType*%>* types)
 
         rl_startup_hook = readline_init_text;
 
-        char* line = readline("sevenstars lang > ");
+        char* line = readline("clover3 lang > ");
 
         if(line == null) {
             break;
@@ -418,7 +418,7 @@ void shell(vector<sCLType*%>* types)
         }
 
         CLVALUE result;
-        (void)shell_eval_str(line, "sevenstars", true, types, &result);
+        (void)shell_eval_str(line, "clover3", true, types, &result);
 
         add_history(line);
 
@@ -428,7 +428,7 @@ void shell(vector<sCLType*%>* types)
 
 void shell_run_command(char* line, vector<sCLType*%>* types, CLVALUE* result)
 {
-    (void)shell_eval_str(line, "sevenstars", true, types, result);
+    (void)shell_eval_str(line, "clover3", true, types, result);
 
     add_history(line);
 }
@@ -444,7 +444,7 @@ void shell_commandline(char* line, int cursor_point, vector<sCLType*%>* types, C
 
     rl_startup_hook = readline_init_text;
 
-    char* line2 = readline("sevenstars lang > ");
+    char* line2 = readline("clover3 lang > ");
 
     if(line2 == null) {
         result->mObjectValue = 0;
@@ -456,7 +456,7 @@ void shell_commandline(char* line, int cursor_point, vector<sCLType*%>* types, C
         return;
     }
 
-    (void)shell_eval_str(line2, "sevenstars", true, types, result);
+    (void)shell_eval_str(line2, "clover3", true, types, result);
 
     add_history(line2);
 
@@ -474,7 +474,7 @@ void shell_commandline_without_to_string(char* line, int cursor_point, vector<sC
 
     rl_startup_hook = readline_init_text;
 
-    char* line2 = readline("sevenstars lang > ");
+    char* line2 = readline("clover3 lang > ");
 
     if(line2 == null) {
         result->mObjectValue = 0;
@@ -486,7 +486,7 @@ void shell_commandline_without_to_string(char* line, int cursor_point, vector<sC
         return;
     }
 
-    (void)shell_eval_str(line2, "sevenstars", false, types, result);
+    (void)shell_eval_str(line2, "clover3", false, types, result);
 
     add_history(line2);
 

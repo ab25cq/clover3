@@ -43,7 +43,7 @@ int main(int argc, char** argv)
         }
         else if(strcmp(argv[i], "--version") == 0 || strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "-V") == 0)
         {
-            printf("sevenstars lang version %s\n", gVersion);
+            printf("clover3 lang version %s\n", gVersion);
             exit(0);
         }
         else {
@@ -74,7 +74,7 @@ int main(int argc, char** argv)
         clover3_init(no_load_fudamental_classes);
 
         if(!compiler(sname)) {
-            fprintf(stderr, "sevenstars can't compile %s\n", argv[i]);
+            fprintf(stderr, "clover3 can't compile %s\n", argv[i]);
             clover3_final();
             return 1;
         }
@@ -104,7 +104,7 @@ int main(int argc, char** argv)
         clover3_init(no_load_fudamental_classes);
 
         if(!compiler2(string(source).to_buffer())) {
-            fprintf(stderr, "sevenstars can't compile %s\n", argv[i]);
+            fprintf(stderr, "clover3 can't compile %s\n", argv[i]);
             clover3_final();
             return 1;
         }

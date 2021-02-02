@@ -11,15 +11,15 @@ void compiler_init(bool no_load_fudamental_classes)
         char path[PATH_MAX];
 
         char* system_path = PREFIX;
-        snprintf(path, PATH_MAX, "%s/share/sevenstars/sevenstars.ss", system_path);
+        snprintf(path, PATH_MAX, "%s/share/clover3/clover3.ss", system_path);
 
         if(access(path, R_OK) != 0) {
             char* home_path = getenv("HOME");
 
-            snprintf(path, PATH_MAX, "%s/.sevenstars/sevenstars.ss", home_path);
+            snprintf(path, PATH_MAX, "%s/.clover3/clover3.ss", home_path);
 
             if(access(path, R_OK) != 0) {
-                snprintf(path, PATH_MAX, "sevenstars.ss");
+                snprintf(path, PATH_MAX, "clover3.ss");
             }
         }
 

@@ -712,12 +712,12 @@ bool load_class(char* name, sParserInfo* info)
     char path[PATH_MAX];
     
     char* system_path = PREFIX;
-    snprintf(path, PATH_MAX, "%s/share/sevenstars/%s.ssc", system_path, name);
+    snprintf(path, PATH_MAX, "%s/share/clover3/%s.ssc", system_path, name);
 
     if(access(path, R_OK) != 0) {
         char* home_path = getenv("HOME");
 
-        snprintf(path, PATH_MAX, "%s/.sevenstars-c/%s.ssc", home_path, name);
+        snprintf(path, PATH_MAX, "%s/.clover3/%s.ssc", home_path, name);
 
         if(access(path, R_OK) != 0) {
             snprintf(path, PATH_MAX, "%s.ssc", name);
