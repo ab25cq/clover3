@@ -1478,18 +1478,22 @@ static bool expression_node(sCLNode** node, sParserInfo* info)
                 else {
                     puts("ok");
                 }
-            }
+            };
+
+            *node = sNodeTree_create_null_value(info);
         }
         else if(strcmp(word, "load_class") == 0) {
             string klass_name = parse_word(info)
 
-            //printf("loading %s class...", klass_name);
+            printf("loading %s class...", klass_name);
             if(!load_class(klass_name, info)) {
-                //puts("error");
+                puts("error");
             }
             else {
-                //puts("ok");
-            }
+                puts("ok");
+            };
+
+            *node = sNodeTree_create_null_value(info);
         }
         else if(strcmp(word, "exit") == 0) {
             sCLNode* params[PARAMS_MAX];
