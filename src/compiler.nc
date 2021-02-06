@@ -399,6 +399,64 @@ void set_signal_shell()
 }
 */
 
+void print_result_object(CLObject result_obj, sParserInfo* info)
+{
+    if(result_obj) {
+        sCLObject* object_data = CLOBJECT(result_obj);
+        
+        if(type_identify_with_class_name(object_data->mType, "string", info)) {
+            char* result_str = get_string_mem(result_obj);
+
+            if(strcmp(result_str, "") != 0) {
+                printf("%s\n", result_str);
+            }
+        }
+        else if(type_identify_with_class_name(object_data->mType, "int", info)) {
+            int result_value = get_int_value(result_obj);
+
+            printf("%d\n", result_value);
+        }
+        else if(type_identify_with_class_name(object_data->mType, "bool", info)) {
+            int result_value = get_int_value(result_obj);
+
+            if(result_value) {
+                printf("true\n");
+            }
+            else {
+                printf("false\n");
+            }
+        }
+        else if(type_identify_with_class_name(object_data->mType, "void", info)) {
+            printf("null\n");
+        }
+        else if(type_identify_with_class_name(object_data->mType, "list", info)) {
+            list<int>* result_value = get_list_value(result_obj);
+
+            result_value.each {
+                print_result_object(it, info);
+            }
+        }
+        else if(type_identify_with_class_name(object_data->mType, "map", info)) {
+            map<char*,int>* result_value = get_map_value(result_obj);
+
+            result_value.each {
+                puts(it);
+                print_result_object(it2, info);
+            }
+        }
+        else if(type_identify_with_class_name(object_data->mType, "regex", info)) {
+            nregex& result_value = get_regex_value(result_obj);
+
+            printf("/%s/\n", result_value.str);
+        }
+        else if(type_identify_with_class_name(object_data->mType, "buffer", info)) {
+            buffer* result_value = get_buffer_value(result_obj);
+
+            printf("%s\n", result_value.buf);
+        }
+    }
+}
+
 bool shell_eval_str(char* str, char* fname, bool output, vector<sCLType*%>* types, CLVALUE* result, vector<sCLStackFrame>* stack_frames, vector<sVarTable*%>* vtables, vector<sVar*%>* vars, CLVALUE* init_stack)
 {
     gSigInt = false;
@@ -584,17 +642,7 @@ bool shell_eval_str(char* str, char* fname, bool output, vector<sCLType*%>* type
     if(output) {
         CLObject result_obj = result->mObjectValue;
 
-        if(result_obj) {
-            sCLObject* object_data = CLOBJECT(result_obj);
-            
-            if(type_identify_with_class_name(object_data->mType, "string", &info)) {
-                char* result_str = get_string_mem(result_obj);
-
-                if(strcmp(result_str, "") != 0) {
-                    printf("=> %s\n---\n", result_str);
-                }
-            }
-        }
+        print_result_object(result_obj, &info);
     }
 
     delete info.nodes;
