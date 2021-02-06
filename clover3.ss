@@ -17,6 +17,7 @@ load_class field;
 load_class type;
 load_class regex;
 load_class system;
+load_class void;
 
 macro list {
 ruby <<'EOS'

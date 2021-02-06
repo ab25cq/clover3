@@ -1305,6 +1305,19 @@ static bool expression_node(sCLNode** node, sParserInfo* info)
 
         *node = sNodeTree_create_normal_block(node_block, info);
     }
+    else if(*info->p == '\\' && *(info->p+1) == '{') {
+        info->p++;
+        expected_next_character('{', info);
+
+        sCLNode* exp = null;
+        if(!expression(&exp, info)) {
+            return false;
+        };
+
+        expected_next_character('}', info);
+
+        *node = exp;
+    }
     /// stdin ///
     else if(isatty(0) == 0 && *info->p == '.') {
         info->p++;

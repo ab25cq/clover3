@@ -718,7 +718,7 @@ bool invoke_block(int block_object, int result_existance, int num_params, CLVALU
     buffer.append((char*)codes, codes_len);
 
     CLVALUE result;
-    if(!vm(buffer, *stack_ptr, num_params, var_num, &result, info)) {
+    if(!vm(buffer, *stack_ptr, num_params, var_num, &result, null, info)) {
         return false;
     }
 
@@ -736,27 +736,52 @@ bool invoke_block(int block_object, int result_existance, int num_params, CLVALU
     return true;
 }
 
-bool vm(buffer* codes, CLVALUE* parent_stack_ptr, int num_params, int var_num, CLVALUE* result, sVMInfo* info)
+bool vm(buffer* codes, CLVALUE* parent_stack_ptr, int num_params, int var_num, CLVALUE* result, CLVALUE* init_stack, sVMInfo* info)
 {
     sCLStackFrame null_parent_stack_frame;
     memset(&null_parent_stack_frame, 0, sizeof(sCLStackFrame));
 
-    CLVALUE stack[VM_STACK_MAX];
+    CLVALUE* stack;
     sCLStackFrame stack_frame;
 
-    memset(stack, 0, sizeof(CLVALUE) * VM_STACK_MAX);
-    
-    CLVALUE* stack_ptr = (CLVALUE*)stack + var_num;
+    CLVALUE stack2[VM_STACK_MAX];
 
-    int* head_codes = (int*)codes.buf;
-    int* p = (int*)codes.buf;
+    CLVALUE* stack_ptr;
+    int* head_codes;
+    int* p;
 
-    stack_frame.stack = stack;
-    stack_frame.stack_ptr = &stack_ptr;
-    stack_frame.var_num = var_num;
-    stack_frame.index = info.stack_frames.length();
+    if(init_stack) {
+        stack = init_stack;
+        //memset(stack, 0, sizeof(CLVALUE) * VM_STACK_MAX);
+        
+        stack_ptr = (CLVALUE*)stack + var_num;
 
-    info.stack_frames.push_back(stack_frame);
+        head_codes = (int*)codes.buf;
+        p = (int*)codes.buf;
+
+        stack_frame.stack = stack;
+        stack_frame.stack_ptr = &stack_ptr;
+        stack_frame.var_num = var_num;
+        stack_frame.index = info.stack_frames.length();
+
+        info.stack_frames.push_back(stack_frame);
+    }
+    else {
+        stack = stack2;
+        memset(stack, 0, sizeof(CLVALUE) * VM_STACK_MAX);
+        
+        stack_ptr = (CLVALUE*)stack + var_num;
+
+        head_codes = (int*)codes.buf;
+        p = (int*)codes.buf;
+
+        stack_frame.stack = stack;
+        stack_frame.stack_ptr = &stack_ptr;
+        stack_frame.var_num = var_num;
+        stack_frame.index = info.stack_frames.length();
+
+        info.stack_frames.push_back(stack_frame);
+    }
 
     ready_for_vm_stack(stack, parent_stack_ptr, num_params, var_num, info);
     
@@ -1525,7 +1550,7 @@ bool vm(buffer* codes, CLVALUE* parent_stack_ptr, int num_params, int var_num, C
                         int var_num = method.mMaxVarNum;
 
                         CLVALUE result;
-                        if(!vm(codes, stack_ptr, num_params, var_num, &result, info)) {
+                        if(!vm(codes, stack_ptr, num_params, var_num, &result, null, info)) {
                             info.stack_frames.pop_back(null_parent_stack_frame);
                             return false;
                         }
@@ -1646,7 +1671,7 @@ bool vm(buffer* codes, CLVALUE* parent_stack_ptr, int num_params, int var_num, C
 
                 CLVALUE result_obj;
                 info->thrown_object.mObjectValue = 0;
-                bool result = vm(try_codes, stack_ptr, num_params, var_num, &result_obj, info);
+                bool result = vm(try_codes, stack_ptr, num_params, var_num, &result_obj, null, info);
 
                 if(!result) {
                     buffer*% catch_codes = new buffer.initialize();
@@ -1656,7 +1681,7 @@ bool vm(buffer* codes, CLVALUE* parent_stack_ptr, int num_params, int var_num, C
                     int var_num = catch_var_num;
 
                     CLVALUE result_obj;
-                    if(!vm(catch_codes, stack_ptr, num_params, var_num, &result_obj, info))
+                    if(!vm(catch_codes, stack_ptr, num_params, var_num, &result_obj, null, info))
                     {
                         info.stack_frames.pop_back(null_parent_stack_frame);
                         return false;
@@ -1684,6 +1709,7 @@ bool vm(buffer* codes, CLVALUE* parent_stack_ptr, int num_params, int var_num, C
                 break;
 
         }
+//print_op(op, stdout);
 //puts("end");
 //print_stack(stack, stack_ptr, var_num);
     };

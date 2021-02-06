@@ -47,7 +47,7 @@ void compiler_init(bool no_load_fudamental_classes)
             heap_init(HEAP_INIT_SIZE, HEAP_HANDLE_INIT_SIZE);
             var types = new vector<sCLType*%>.initialize();
             CLVALUE result;
-            if(!shell_eval_str(source, "load fundamental class", false, types, &result)) {
+            if(!shell_eval_str(source, "load fundamental class", false, types, &result, null, null, null, null)) {
                 fprintf(stderr, "no load fundamental class\n");
             }
             heap_final();
@@ -399,7 +399,7 @@ void set_signal_shell()
 }
 */
 
-bool shell_eval_str(char* str, char* fname, bool output, vector<sCLType*%>* types, CLVALUE* result)
+bool shell_eval_str(char* str, char* fname, bool output, vector<sCLType*%>* types, CLVALUE* result, vector<sCLStackFrame>* stack_frames, vector<sVarTable*%>* vtables, vector<sVar*%>* vars, CLVALUE* init_stack)
 {
     gSigInt = false;
     result->mObjectValue = 0;
@@ -409,12 +409,7 @@ bool shell_eval_str(char* str, char* fname, bool output, vector<sCLType*%>* type
     memset(&info, 0, sizeof(sParserInfo));
 
     string str2 = null;
-    if(output) {
-        str2 = xsprintf("{ %s }.to_string()", str);
-    }
-    else {
-        str2 = xsprintf("%s", str);
-    }
+    str2 = xsprintf("%s", str);
     
     info.p = str2;
     xstrncpy(info.sname, fname, PATH_MAX);
@@ -425,12 +420,22 @@ bool shell_eval_str(char* str, char* fname, bool output, vector<sCLType*%>* type
     info.err_num = 0;
     
     info.nodes = borrow new vector<sCLNode*%>.initialize();
-    info.vtables = borrow new vector<sVarTable*%>.initialize();
+    if(vtables) {
+        info.vtables = vtables;
+    }
+    else {
+        info.vtables = borrow new vector<sVarTable*%>.initialize();
+        
+        init_var_table(info.vtables);
+    }
     info.blocks = borrow new vector<sCLNodeBlock*%>.initialize();
     info.types = types;
-    info.vars = borrow new vector<sVar*%>.initialize();
-    
-    init_var_table(&info);
+    if(vars) {
+        info.vars = vars;
+    }
+    else {
+        info.vars = borrow new vector<sVar*%>.initialize();
+    }
 
     sCompileInfo cinfo;
     
@@ -453,9 +458,13 @@ bool shell_eval_str(char* str, char* fname, bool output, vector<sCLType*%>* type
         sCLNode* node = null;
         if(!expression(&node, &info)) {
             delete info.nodes;
-            delete info.vtables;
+            if(vtables == null) {
+                delete info.vtables;
+            }
             delete info.blocks;
-            delete info.vars;
+            if(vars == null) {
+                delete info.vars;
+            }
             delete cinfo.codes;
             return false;
         }
@@ -469,9 +478,13 @@ bool shell_eval_str(char* str, char* fname, bool output, vector<sCLType*%>* type
         
         if(!compile(node, &cinfo)) {
             delete info.nodes;
-            delete info.vtables;
+            if(vtables == null) {
+                delete info.vtables;
+            }
             delete info.blocks;
-            delete info.vars;
+            if(vars == null) {
+                delete info.vars;
+            }
             delete cinfo.codes;
             return false;
         }
@@ -481,7 +494,9 @@ bool shell_eval_str(char* str, char* fname, bool output, vector<sCLType*%>* type
             delete info.nodes;
             delete info.vtables;
             delete info.blocks;
-            delete info.vars;
+            if(vars == null) {
+                delete info.vars;
+            }
             delete cinfo.codes;
             return false;
         }
@@ -505,9 +520,13 @@ bool shell_eval_str(char* str, char* fname, bool output, vector<sCLType*%>* type
     if(info.err_num > 0) {
         fprintf(stderr, "Parser error. The error number is %d\n", info.err_num);
         delete info.nodes;
-        delete info.vtables;
+        if(vtables == null) {
+            delete info.vtables;
+        }
         delete info.blocks;
-        delete info.vars;
+        if(vars == null) {
+            delete info.vars;
+        }
         delete cinfo.codes;
         return false;
     }
@@ -526,9 +545,14 @@ bool shell_eval_str(char* str, char* fname, bool output, vector<sCLType*%>* type
     
     vminfo.pinfo = &info;
     vminfo.cinfo = &cinfo;
-    vminfo.stack_frames = borrow new vector<sCLStackFrame>.initialize();
+    if(stack_frames == null) {
+        vminfo.stack_frames = borrow new vector<sCLStackFrame>.initialize();
+    }
+    else {
+        vminfo.stack_frames = stack_frames;
+    }
     
-    if(!vm(cinfo.codes, NULL, 0, var_num, result, &vminfo)) {
+    if(!vm(cinfo.codes, NULL, 0, var_num, result, init_stack, &vminfo)) {
         fprintf(stderr, "VM error.\n");
         CLObject obj = vminfo.thrown_object.mObjectValue;
         if(obj) {
@@ -543,11 +567,17 @@ bool shell_eval_str(char* str, char* fname, bool output, vector<sCLType*%>* type
         }
 
         delete info.nodes;
-        delete info.vtables;
+        if(vtables == null) {
+            delete info.vtables;
+        }
         delete info.blocks;
-        delete info.vars;
+        if(vars == null) {
+            delete info.vars;
+        }
         delete cinfo.codes;
-        delete vminfo.stack_frames;
+        if(stack_frames == null) {
+            delete vminfo.stack_frames;
+        }
         return false;
     }
     
@@ -561,18 +591,24 @@ bool shell_eval_str(char* str, char* fname, bool output, vector<sCLType*%>* type
                 char* result_str = get_string_mem(result_obj);
 
                 if(strcmp(result_str, "") != 0) {
-                    printf("=> %s\n", result_str);
+                    printf("=> %s\n---\n", result_str);
                 }
             }
         }
     }
 
     delete info.nodes;
-    delete info.vtables;
+    if(vtables == null) {
+        delete info.vtables;
+    }
     delete info.blocks;
-    delete info.vars;
+    if(vars == null) {
+        delete info.vars;
+    }
     delete cinfo.codes;
-    delete vminfo.stack_frames;
+    if(stack_frames == null) {
+        delete vminfo.stack_frames;
+    }
 
     return true;
 }
@@ -633,7 +669,7 @@ bool compile_script(char* fname, buffer* source)
     info.types = borrow new vector<sCLType*%>.initialize();
     info.vars = borrow new vector<sVar*%>.initialize();
     
-    init_var_table(&info);
+    init_var_table(info.vtables);
 
     sCompileInfo cinfo;
     
@@ -732,7 +768,7 @@ bool compile_script(char* fname, buffer* source)
     heap_init(HEAP_INIT_SIZE, HEAP_HANDLE_INIT_SIZE);
 
     CLVALUE result;
-    if(!vm(cinfo.codes, NULL, 0, var_num, &result, &vminfo)) {
+    if(!vm(cinfo.codes, NULL, 0, var_num, &result, null, &vminfo)) {
         fprintf(stderr, "VM error.\n");
         CLObject obj = vminfo.thrown_object.mObjectValue;
         if(obj) {

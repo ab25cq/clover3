@@ -2387,12 +2387,12 @@ bool compile_method_call(sCLNode* node, sCompileInfo* info)
         }
     }
     else {
-        if(klass == null) {
-            compile_err_msg(info, xsprintf("class not found(%s)\n", klass_name));
+        if(method == null) {
+            compile_err_msg(info, xsprintf("method not found(%s.%s)\n", klass_name, method_name));
             return true;
         }
-        if(method == null) {
-            compile_err_msg(info, xsprintf("method not found(%s.%s)\n", klass.mName, method_name));
+        if(klass == null) {
+            compile_err_msg(info, xsprintf("class not found(%s)\n", klass_name));
             return true;
         }
 

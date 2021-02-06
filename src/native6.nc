@@ -330,7 +330,7 @@ bool vm_invoke_method(CLObject obj, char* method_name, int num_params, CLVALUE**
         int var_num = method.mMaxVarNum;
 
         CLVALUE result;
-        if(!vm(codes, *stack_ptr, num_params, var_num, &result, info)) {
+        if(!vm(codes, *stack_ptr, num_params, var_num, &result, null, info)) {
             return false;
         }
 

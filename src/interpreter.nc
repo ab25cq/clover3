@@ -192,7 +192,7 @@ char* completion_generator(char* text, int state)
         info.types = borrow new vector<sCLType*%>.initialize();
         info.vars = borrow new vector<sVar*%>.initialize();
         
-        init_var_table(&info);
+        init_var_table(info.vtables);
 
         sCompileInfo cinfo;
         
@@ -399,6 +399,13 @@ void shell(vector<sCLType*%>* types)
     rl_completer_quote_characters = "\"'";
     rl_completer_word_break_characters = " .({";
     rl_attempted_completion_function = completer;
+    vector<sVarTable*%>* vtables = borrow new vector<sVarTable*%>.initialize();
+    vector<sCLStackFrame>* stack_frames = borrow new vector<sCLStackFrame>.initialize();
+    vector<sVar*%>* vars = borrow new vector<sVar*%>.initialize();
+
+    CLVALUE init_stack[VM_STACK_MAX];
+    
+    init_var_table(vtables);
 
     while(1) {
         gCmdlineInitString = "";
@@ -418,17 +425,21 @@ void shell(vector<sCLType*%>* types)
         }
 
         CLVALUE result;
-        (void)shell_eval_str(line, "clover3", true, types, &result);
+        (void)shell_eval_str(line, "clover3", true, types, &result, stack_frames, vtables, vars, init_stack);
 
         add_history(line);
 
         free(line);
     };
+
+    delete vtables;
+    delete stack_frames;
+    delete vars;
 }
 
 void shell_run_command(char* line, vector<sCLType*%>* types, CLVALUE* result)
 {
-    (void)shell_eval_str(line, "clover3", true, types, result);
+    (void)shell_eval_str(line, "clover3", true, types, result, null, null, null, null);
 
     add_history(line);
 }
@@ -456,7 +467,7 @@ void shell_commandline(char* line, int cursor_point, vector<sCLType*%>* types, C
         return;
     }
 
-    (void)shell_eval_str(line2, "clover3", true, types, result);
+    (void)shell_eval_str(line2, "clover3", true, types, result, null, null, null, null);
 
     add_history(line2);
 
@@ -486,7 +497,7 @@ void shell_commandline_without_to_string(char* line, int cursor_point, vector<sC
         return;
     }
 
-    (void)shell_eval_str(line2, "clover3", false, types, result);
+    (void)shell_eval_str(line2, "clover3", false, types, result, null, null, null, null);
 
     add_history(line2);
 

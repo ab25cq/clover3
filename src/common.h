@@ -312,7 +312,7 @@ bool expression(sCLNode** node, sParserInfo* info);
 bool compile(sCLNode* node, sCompileInfo* info);
 void compile_err_msg(sCompileInfo* info, char* msg);
 
-void init_var_table(sParserInfo* info);
+void init_var_table(vector<sVarTable*%>* vtables);
 void final_var_table(sParserInfo* info);
 void add_variable_to_table(sParserInfo* info, char* name, sCLType* type, bool readonly);
 sVar* get_variable_from_table(sParserInfo* info, char* name);
@@ -431,7 +431,7 @@ struct sVMInfo {
 
 void vm_err_msg(CLVALUE** stack_ptr, sVMInfo* info, char* msg);
 bool param_check(sCLParam* method_params, int num_params, CLVALUE* stack_ptr, sCLType * generics_types, sVMInfo* info);
-bool vm(buffer* codes, CLVALUE* parent_stack_ptr, int num_params, int var_num, CLVALUE* result, sVMInfo* info);
+bool vm(buffer* codes, CLVALUE* parent_stack_ptr, int num_params, int var_num, CLVALUE* result, CLVALUE* init_stack, sVMInfo* info);
 bool invoke_block(int block_object, int result_existance, int num_params, CLVALUE** stack_ptr, sVMInfo* info);
 CLObject alloc_heap_mem(unsigned int size, sCLType* type, int field_num, sVMInfo* info);
 void heap_init(int heap_size, int size_handles);
@@ -665,7 +665,7 @@ void sig_int_for_shell(int signal);
 void shell(vector<sCLType*%>* types);
 void clover3_init(bool no_load_fundamental_classes);
 void clover3_final();
-bool shell_eval_str(char* str, char* fname, bool output, vector<sCLType*%>* types, CLVALUE* result);
+bool shell_eval_str(char* str, char* fname, bool output, vector<sCLType*%>* types, CLVALUE* result, vector<sCLStackFrame>* stack_frames, vector<sVarTable*%>* vtables, vector<sVar*%>* vars, CLVALUE* init_stack);
 
 bool forground_job(int job_num);
 void shell_run_command(char* line, vector<sCLType*%>* types, CLVALUE* result);

@@ -1,6 +1,6 @@
 # Clover3 script language
 
-version 0.0.1
+version 0.0.2
 
 * 特徴
 
@@ -724,6 +724,14 @@ You can run a string at runtime with eval. You can use this and reflection to cr
 * shell mode
 
 You can write script like shell script
+
+* クラスファイル
+
+クラスはsave_class クラス名とするとファイルに保存できます。保存したクラスはload_class クラス名で読み込めます。保存したファイルは拡張子sscファイルです。ホームディレクトリの~/.clover3にファイルを置くとカレントディレクトリの位置にかかわらずクラスファイルを読み込めます。
+
+* class file
+
+The class can be saved to a file with the save_class class name. The saved class can be loaded with the load_class class name. The saved file has the extension ssc. If you put the file in ~/.clover3 in your home directory, you can read the class file regardless of the location of the current directory.
 
 ```
 echo aaa

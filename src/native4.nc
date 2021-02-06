@@ -138,7 +138,7 @@ bool eval_str(char* str, char* fname, CLVALUE* result_value, sVMInfo* parent_vmi
     info.types = parent_vminfo.cinfo.pinfo.types;
     info.vars = borrow new vector<sVar*%>.initialize();
     
-    init_var_table(&info);
+    init_var_table(info.vtables);
 
     sCompileInfo cinfo;
     
@@ -234,7 +234,7 @@ bool eval_str(char* str, char* fname, CLVALUE* result_value, sVMInfo* parent_vmi
     vminfo.cinfo = &cinfo;
     vminfo.stack_frames = borrow new vector<sCLStackFrame>.initialize();
     
-    if(!vm(cinfo.codes, NULL, 0, var_num, result_value, &vminfo)) {
+    if(!vm(cinfo.codes, NULL, 0, var_num, result_value, null, &vminfo)) {
         fprintf(stderr, "VM error.\n");
         CLObject obj = vminfo.thrown_object.mObjectValue;
         if(obj) {

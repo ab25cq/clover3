@@ -682,6 +682,86 @@ bool class_field(CLVALUE** stack_ptr, sVMInfo* info)
     return true;
 }
 
+bool class_all_methods(CLVALUE** stack_ptr, sVMInfo* info)
+{
+    CLObject klass = (*stack_ptr-1)->mObjectValue;
+
+    /// check type ///
+    if(!check_type(klass, "class", info)) {
+        vm_err_msg(stack_ptr, info, "type error on class.method");
+        return false;
+    }
+
+    /// sevenstars to neo-c
+    sCLClassObject* class_object_data = CLCLASS(klass);
+
+    sCLClass* klass_value = class_object_data->mClass;
+
+    /// go ///
+    klass_value->mMethods.each {
+        sCLMethod* method = it2;
+
+        CLObject obj = create_method_object(method, info);
+
+        (*stack_ptr)->mObjectValue = obj;
+        (*stack_ptr)++;
+    }
+
+    var list_value = new list<int>.initialize();
+
+    for(int i = 0; i<klass_value->mMethods.length(); i++) {
+        CLObject obj = (*stack_ptr+i-klass_value->mMethods.length())->mObjectValue;
+        list_value.push_back(obj);
+    }
+
+    (*stack_ptr) -= klass_value.mMethods.length();
+
+    (*stack_ptr)->mObjectValue = create_list_object(list_value, info);
+    (*stack_ptr)++;
+
+    return true;
+}
+
+bool class_all_fields(CLVALUE** stack_ptr, sVMInfo* info)
+{
+    CLObject klass = (*stack_ptr-1)->mObjectValue;
+
+    /// check type ///
+    if(!check_type(klass, "class", info)) {
+        vm_err_msg(stack_ptr, info, "type error on class.method");
+        return false;
+    }
+
+    /// sevenstars to neo-c
+    sCLClassObject* class_object_data = CLCLASS(klass);
+
+    sCLClass* klass_value = class_object_data->mClass;
+
+    /// go ///
+    klass_value->mFields.each {
+        sCLField* field = it2;
+
+        CLObject obj = create_field_object(field, info);
+
+        (*stack_ptr)->mObjectValue = obj;
+        (*stack_ptr)++;
+    }
+
+    var list_value = new list<int>.initialize();
+
+    for(int i = 0; i<klass_value->mFields.length(); i++) {
+        CLObject obj = (*stack_ptr+i-klass_value->mFields.length())->mObjectValue;
+        list_value.push_back(obj);
+    }
+
+    (*stack_ptr) -= klass_value.mFields.length();
+
+    (*stack_ptr)->mObjectValue = create_list_object(list_value, info);
+    (*stack_ptr)++;
+
+    return true;
+}
+
 bool class_equal(CLVALUE** stack_ptr, sVMInfo* info)
 {
     CLObject self = (*stack_ptr-2)->mObjectValue;
@@ -849,4 +929,6 @@ void native_init2()
     gNativeMethods.insert(string("class.not_equal"), class_not_equal);
     gNativeMethods.insert(string("regex.set_value"), regex_set_value);
     gNativeMethods.insert(string("regex.to_string"), regex_to_string);
+    gNativeMethods.insert(string("class.all_methods"), class_all_methods);
+    gNativeMethods.insert(string("class.all_fields"), class_all_fields);
 }

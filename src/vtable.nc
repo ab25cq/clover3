@@ -14,13 +14,13 @@ initialize()
 
 }
 
-void init_var_table(sParserInfo* info) 
+void init_var_table(vector<sVarTable*%>* vtables)
 {
     var vtable = new sVarTable.initialize();
     
-    vtable.mParent = info.vtables.item(-1, null);
+    vtable.mParent = vtables.item(-1, null);
 
-    info.vtables.push_back(vtable);
+    vtables.push_back(vtable);
 }
 
 void final_var_table(sParserInfo* info)
@@ -32,7 +32,7 @@ void final_var_table(sParserInfo* info)
 void add_variable_to_table(sParserInfo* info, char* name, sCLType* type, bool readonly)
 {
     sVarTable* vtable = info.vtables.item(-1, null);
-    
+
     sVar*% v = new sVar;
     
     v.mName = string(name);

@@ -45,6 +45,12 @@ class int {
     }
 };
 
+class void {
+    def to_string():string {
+        "null"
+    }
+}
+
 class system
 {
     def exit(exit_code:int):void;
@@ -184,7 +190,9 @@ class list<T>
         while(i < self.length()) {
             buf.append_str(self.item(i, null).to_string());
             i++;
-            buf.append_str("\n");
+            if(i != self.length()) {
+                buf.append_str("\n")
+            }
         }
 
         buf.to_string()
@@ -458,6 +466,8 @@ class class
     def parent(default_value:class?):class;
     def method(name:string, default_value:method?):method;
     def field(name:string, default_value:method?):field;
+    def all_methods():list<method>;
+    def all_fields():list<field>;
     def equal(right:class?): bool;
     def not_equal(right:class?): bool;
 }
@@ -554,6 +564,7 @@ class system
     def fg(job_num:string):void;
 }
 
+save_class void;
 save_class object;
 save_class int;
 save_class bool;

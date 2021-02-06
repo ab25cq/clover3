@@ -105,6 +105,7 @@ src/macro.o: config.h src/*.h Makefile configure src/macro.nc
 install:
 	mkdir -p $(DESTDIR)/share/clover3
 	$(INSTALL) -m 644 clover3.ss $(DESTDIR)/share/clover3
+	$(INSTALL) -m 644 void.ssc $(DESTDIR)/share/clover3
 	$(INSTALL) -m 644 int.ssc $(DESTDIR)/share/clover3
 	$(INSTALL) -m 644 bool.ssc $(DESTDIR)/share/clover3
 	$(INSTALL) -m 644 buffer.ssc $(DESTDIR)/share/clover3

@@ -7,12 +7,12 @@ bool parse_block(sCLNodeBlock** node_block, int num_params, sCLParam* params, sP
     *node_block = info.blocks.item(-1, null);
 
     (*node_block)->nodes = new vector<sCLNode*>.initialize();
-    (*node_block)->vtables = clone info.vtables;
     
     var vtables_before = info.vtables;
-    info.vtables = (*node_block)->vtables;
 
-    init_var_table(info);
+    (*node_block)->vtables = clone info.vtables;
+    info.vtables = (*node_block)->vtables;
+    init_var_table(info.vtables);
 
     (*node_block)->head_params = get_var_num(info.vtables);
 

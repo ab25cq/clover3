@@ -1,8 +1,8 @@
-{
 load_class Data;
-}.to_string().print();
+load_class class;
 
-var a = new Data();
+var klass = new class("Data");
 
-a.a.to_string().print();
-a.b.to_string().print();
+klass.all_fields().each {
+    echo(it.name());
+}
