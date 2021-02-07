@@ -613,6 +613,8 @@ class class
     def field(name:string, default_value:method?):field;
     def equal(right:class?): bool;
     def not_equal(right:class?): bool;
+    def all_methods():list<method>;
+    def all_fields():list<field>;
 }
 
 class method
