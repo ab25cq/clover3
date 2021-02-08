@@ -1,9 +1,6 @@
 
 completion
 
-clover3 > var a = 1+1
-clover3 > a.[TAB]
-
 objects managed its type.
 
 command error output
@@ -55,3 +52,6 @@ all_methods()
 
 all_fields()
 check except the string class
+
+clover3 > var a = 1+1
+clover3 > a.[TAB]

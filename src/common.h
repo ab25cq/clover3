@@ -682,5 +682,8 @@ void shell_commandline_without_to_string(char* line, int cursor_point, vector<sC
 
 extern int gSigInt;
 
+void interpreter_init();
+void interpreter_final();
+
 #endif
 

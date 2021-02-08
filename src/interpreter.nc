@@ -11,6 +11,28 @@
 #include <readline/history.h>
 #endif
 
+vector<sVarTable*%>* vtables;
+vector<sCLStackFrame>* stack_frames;
+vector<sVar*%>* vars;
+
+CLVALUE init_stack[VM_STACK_MAX];
+
+void interpreter_init()
+{
+    vtables = borrow new vector<sVarTable*%>.initialize();
+    stack_frames = borrow new vector<sCLStackFrame>.initialize();
+    vars = borrow new vector<sVar*%>.initialize();
+
+    init_var_table(vtables);
+}
+
+void interpreter_final()
+{
+    delete vtables;
+    delete stack_frames;
+    delete vars;
+}
+
 void sig_int_for_shell(int signal)
 {
     gSigInt = 1;
@@ -187,12 +209,10 @@ char* completion_generator(char* text, int state)
         info.err_num = 0;
         
         info.nodes = borrow new vector<sCLNode*%>.initialize();
-        info.vtables = borrow new vector<sVarTable*%>.initialize();
+        info.vtables = vtables;
         info.blocks = borrow new vector<sCLNodeBlock*%>.initialize();
         info.types = borrow new vector<sCLType*%>.initialize();
-        info.vars = borrow new vector<sVar*%>.initialize();
-        
-        init_var_table(info.vtables);
+        info.vars = vars;
 
         sCompileInfo cinfo;
         
@@ -279,10 +299,8 @@ char* completion_generator(char* text, int state)
         }
 
         delete info.nodes;
-        delete info.vtables;
         delete info.blocks;
         delete info.types;
-        delete info.vars;
         delete cinfo.codes;
     }
 
@@ -399,13 +417,6 @@ void shell(vector<sCLType*%>* types)
     rl_completer_quote_characters = "\"'";
     rl_completer_word_break_characters = " .({";
     rl_attempted_completion_function = completer;
-    vector<sVarTable*%>* vtables = borrow new vector<sVarTable*%>.initialize();
-    vector<sCLStackFrame>* stack_frames = borrow new vector<sCLStackFrame>.initialize();
-    vector<sVar*%>* vars = borrow new vector<sVar*%>.initialize();
-
-    CLVALUE init_stack[VM_STACK_MAX];
-    
-    init_var_table(vtables);
 
     while(1) {
         gCmdlineInitString = "";
@@ -431,10 +442,6 @@ void shell(vector<sCLType*%>* types)
 
         free(line);
     };
-
-    delete vtables;
-    delete stack_frames;
-    delete vars;
 }
 
 void shell_run_command(char* line, vector<sCLType*%>* types, CLVALUE* result)
