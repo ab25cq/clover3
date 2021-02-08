@@ -1,5 +1,8 @@
-check except the string class
 
+completion
+
+clover3 > var a = 1+1
+clover3 > a.[TAB]
 
 objects managed its type.
 
@@ -51,3 +54,4 @@ ls().to_st[TAB]
 all_methods()
 
 all_fields()
+check except the string class
