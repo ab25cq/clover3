@@ -202,7 +202,7 @@ class list<T>
     def reset():T;
     def insert(position:int, item:T):void;
     def delete(position:int): void;
-    def replace(position:int, item:T):void;
+    def replace(position:int, item:T):list<T>;
     def delete_range(head:int, tail:int):void;
     def sublist(begin:int, tail:int):list<T>;
 
@@ -501,7 +501,7 @@ class string
     def match(reg:regex):bool;
 
     def reverse():string;
-    def replace(index:int, c:string):void;
+    def replace(index:int, c:string):string;
 
     def scan(reg:regex):list<string>;
     def split(reg:regex):list<string>;

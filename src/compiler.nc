@@ -550,7 +550,9 @@ bool shell_eval_str(char* str, char* fname, bool output, vector<sCLType*%>* type
         if(cinfo.err_num > 0) {
             fprintf(stderr, "Compile error\n");
             delete info.nodes;
-            delete info.vtables;
+            if(vtables == null) {
+                delete info.vtables;
+            }
             delete info.blocks;
             if(vars == null) {
                 delete info.vars;

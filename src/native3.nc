@@ -205,6 +205,9 @@ bool sevenstars_list_replace(CLVALUE** stack_ptr, sVMInfo* info)
     /// go ///
     self_value.replace(position_value, item_value);
 
+    (*stack_ptr)->mObjectValue = self;
+    (*stack_ptr)++;
+
     return true;
 }
 

@@ -506,7 +506,7 @@ bool sevenstars_string_item(CLVALUE** stack_ptr, sVMInfo* info)
         vm_err_msg(stack_ptr, info, "type error on string.item");
         return false;
     }
-    if(!check_type(default_value, "string", info)) {
+    if(!(check_type(default_value, "string", info) || check_type(default_value, "void", info))) {
         vm_err_msg(stack_ptr, info, "type error on string.item");
         return false;
     }

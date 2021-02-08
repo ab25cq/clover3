@@ -1,7 +1,5 @@
+check except the string class
 
-all_methods()
-
-all_fields()
 
 objects managed its type.
 
@@ -49,3 +47,7 @@ getenv
 system class object omitted object name for run method.
 
 ls().to_st[TAB]
+
+all_methods()
+
+all_fields()

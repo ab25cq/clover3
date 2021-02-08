@@ -26,7 +26,7 @@ bool sevenstars_string_index(CLVALUE** stack_ptr, sVMInfo* info)
     int default_value_value = get_int_value(default_value);
 
     /// go ///
-    int result = string(self_value).index(search_str_value, default_value_value);
+    int result = ((string)self_value).index(search_str_value, default_value_value);
 
     (*stack_ptr)->mObjectValue = create_int_object(result, info);
     (*stack_ptr)++;
@@ -60,7 +60,7 @@ bool sevenstars_string_rindex(CLVALUE** stack_ptr, sVMInfo* info)
     int default_value_value = get_int_value(default_value);
 
     /// go ///
-    int result = string(self_value).rindex(search_str_value, default_value_value);
+    int result = ((string)self_value).rindex(search_str_value, default_value_value);
 
     (*stack_ptr)->mObjectValue = create_int_object(result, info);
     (*stack_ptr)++;
@@ -94,7 +94,7 @@ bool sevenstars_string_index_regex(CLVALUE** stack_ptr, sVMInfo* info)
     int default_value_value = get_int_value(default_value);
 
     /// go ///
-    int result = string(self_value).index_regex(clone search_str_value, default_value_value);
+    int result = ((string)self_value).index_regex(clone search_str_value, default_value_value);
 
     (*stack_ptr)->mObjectValue = create_int_object(result, info);
     (*stack_ptr)++;
@@ -128,7 +128,7 @@ bool sevenstars_string_rindex_regex(CLVALUE** stack_ptr, sVMInfo* info)
     int default_value_value = get_int_value(default_value);
 
     /// go ///
-    int result = string(self_value).rindex_regex(clone search_str_value, default_value_value);
+    int result = ((string)self_value).rindex_regex(clone search_str_value, default_value_value);
 
     (*stack_ptr)->mObjectValue = create_int_object(result, info);
     (*stack_ptr)++;
@@ -162,7 +162,7 @@ bool sevenstars_string_sub(CLVALUE** stack_ptr, sVMInfo* info)
     char* replace_value = get_string_mem(replace);
 
     /// go ///
-    string result = string(self_value).sub(clone regex_value, string(replace_value), null);
+    string result = ((string)self_value).sub(clone regex_value, string(replace_value), null);
 
     (*stack_ptr)->mObjectValue = create_string_object(result, info);
     (*stack_ptr)++;
@@ -190,7 +190,7 @@ bool sevenstars_string_match(CLVALUE** stack_ptr, sVMInfo* info)
     nregex& regex_value = get_regex_value(regex);
 
     /// go ///
-    int result = string(self_value).match(clone regex_value, null);
+    int result = ((string)self_value).match(clone regex_value, null);
 
     (*stack_ptr)->mObjectValue = create_bool_object(result, info);
     (*stack_ptr)++;
@@ -212,7 +212,7 @@ bool sevenstars_string_reverse(CLVALUE** stack_ptr, sVMInfo* info)
     char* self_value = get_string_mem(self);
 
     /// go ///
-    string result = string(self_value).reverse();
+    string result = ((string)self_value).reverse();
 
     (*stack_ptr)->mObjectValue = create_string_object(result, info);
     (*stack_ptr)++;
@@ -246,7 +246,10 @@ bool sevenstars_string_replace(CLVALUE** stack_ptr, sVMInfo* info)
     char* c_value = get_string_mem(c);
 
     /// go ///
-    string(self_value).replace(index_value, c_value[0]);
+    ((string)self_value).replace(index_value, c_value[0]);
+
+    (*stack_ptr)->mObjectValue = self;
+    (*stack_ptr)++;
 
     return true;
 }
@@ -277,7 +280,7 @@ bool sevenstars_string_substring(CLVALUE** stack_ptr, sVMInfo* info)
     int tail_value = get_int_value(tail);
 
     /// go ///
-    string result_value = string(self_value).substring(head_value, tail_value);
+    string result_value = ((string)self_value).substring(head_value, tail_value);
 
     CLObject result = create_string_object(result_value, info);
 
@@ -541,7 +544,7 @@ bool sevenstars_string_scan(CLVALUE** stack_ptr, sVMInfo* info)
     nregex& reg_value = get_regex_value(reg);
 
     /// go ///
-    list<string>*% list_ = string(self_value).scan(clone reg_value);
+    list<string>*% list_ = ((string)self_value).scan(clone reg_value);
     list<int>*% list2_ = new list<int>.initialize();
 
     list_.each {
@@ -581,7 +584,7 @@ bool sevenstars_string_split(CLVALUE** stack_ptr, sVMInfo* info)
     nregex& reg_value = get_regex_value(reg);
 
     /// go ///
-    list<string>*% list_ = string(self_value).split(clone reg_value);
+    list<string>*% list_ = ((string)self_value).split(clone reg_value);
     list<int>*% list2_ = new list<int>.initialize();
 
     list_.each {
