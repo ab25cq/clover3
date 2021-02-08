@@ -70,12 +70,15 @@ void clover3_init(bool no_load_fudamental_classes)
     native_init4();
     native_init5();
     native_init6();
+    native_init7();
+    vm_init();
     compiler_init(no_load_fudamental_classes);
     gSigInt = 0;
 }
 
 void clover3_final()
 {
+    vm_final();
     compiler_final();
     native_final();
     class_final();

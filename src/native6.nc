@@ -36,6 +36,9 @@ bool sevenstars_map_insert(CLVALUE** stack_ptr, sVMInfo* info)
     /// go ///
     self_value.insert(key_value, item_value);
     keys_value.push_back(key);
+
+    (*stack_ptr)->mObjectValue = self;
+    (*stack_ptr)++;
     
     return true;
 }
@@ -177,24 +180,33 @@ bool sevenstars_map_equal(CLVALUE** stack_ptr, sVMInfo* info)
     map<char*,int>* right_value = get_map_value(right);
 
     /// go ///
-    bool value = false;
+    bool value = true;
     
     if(self_value.len == right_value.len) {
         self_value.each {
-            value = true;
+            char* key = it;
+            bool value2 = true;
             right_value.each {
-                if(right_value.find(it)) {
+                if(right_value.find(key)) {
                     int default_value = -1;
-                    int item = right_value.at(it, default_value);
+                    int item = right_value.at(key, default_value);
+
                     if(it2 != item) {
-                        value = false;
+                        value2 = false;
                     }
                 }
                 else {
-                    value = false;
+                    value2 = false;
                 }
             }
+
+            if(value2 == false) {
+                value = false;
+            }
         }
+    }
+    else {
+        value = false;
     }
 
     CLObject result = create_bool_object(value, info);

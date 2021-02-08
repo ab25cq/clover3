@@ -36,8 +36,8 @@ all: clover3 core
 core: core.ss
 	./clover3 -core core.ss
 
-clover3: config.h src/*.h Makefile configure src/main.nc src/compiler.o src/interpreter.o src/parser.o src/node.o src/type.o src/class.o src/native.o src/native2.o src/native3.o src/native4.o src/native5.o src/native6.o src/vm.o src/vtable.o src/heap.o src/object.o src/block.o src/macro.o
-	$(CC) -o clover3 src/main.nc src/compiler.o src/interpreter.o src/parser.o src/node.o src/type.o src/class.o src/native.o src/native2.o src/native3.o src/native4.o src/native5.o src/native6.o src/vm.o src/vtable.o src/heap.o src/object.o src/block.o src/macro.o $(CFLAGS) $(NCFLAGS) $(LIBS)
+clover3: config.h src/*.h Makefile configure src/main.nc src/compiler.o src/interpreter.o src/parser.o src/node.o src/type.o src/class.o src/native.o src/native2.o src/native3.o src/native4.o src/native5.o src/native6.o src/native7.o src/vm.o src/vtable.o src/heap.o src/object.o src/block.o src/macro.o
+	$(CC) -o clover3 src/main.nc src/compiler.o src/interpreter.o src/parser.o src/node.o src/type.o src/class.o src/native.o src/native2.o src/native3.o src/native4.o src/native5.o src/native6.o src/native7.o src/vm.o src/vtable.o src/heap.o src/object.o src/block.o src/macro.o $(CFLAGS) $(NCFLAGS) $(LIBS)
 
 ##########################################################
 # objects
@@ -77,6 +77,9 @@ src/native5.o: config.h src/*.h Makefile configure src/native5.nc
 
 src/native6.o: config.h src/*.h Makefile configure src/native6.nc
 	$(CC) -c src/native6.nc $(CFLAGS) $(NCFLAGS) || clang -c -o src/native6.o src/native6.ll
+
+src/native7.o: config.h src/*.h Makefile configure src/native7.nc
+	$(CC) -c src/native7.nc $(CFLAGS) $(NCFLAGS) || clang -c -o src/native7.o src/native7.ll
 
 src/vm.o: config.h src/*.h Makefile configure src/vm.nc
 	$(CC) -c src/vm.nc $(CFLAGS) $(NCFLAGS) || clang -c -o src/vm.o src/vm.ll

@@ -947,6 +947,76 @@ static bool compile_store_variable(sCLNode* node, sCompileInfo* info)
     return true;
 }
 
+sCLNode* sNodeTree_create_store_global_variable(char* var_name, sCLNode* exp, sParserInfo* info)
+{
+    sCLNode* result = alloc_node(info);
+    
+    result.type = kNodeTypeStoreGlobalVariable;
+    
+    xstrncpy(result.sname, info.sname, PATH_MAX);
+    result.sline = info.sline;
+    
+    result.mStringValue = string(var_name);
+    
+    result.left = exp;
+    result.right = null;
+    result.middle = null;
+
+    return result;
+}
+
+static bool compile_store_global_variable(sCLNode* node, sCompileInfo* info)
+{
+    if(!compile(node.left, info)) {
+        return false;
+    }
+
+    if(!info.no_output) {
+        char* var_name = borrow node.mStringValue;
+
+        info.codes.append_int(OP_STORE_GLOBAL_VARIABLE);
+        info.codes.append_nullterminated_str(var_name);
+        info.codes.alignment();
+    }
+    
+    return true;
+}
+
+sCLNode* sNodeTree_create_load_global_variable(char* var_name, sParserInfo* info)
+{
+    sCLNode* result = alloc_node(info);
+    
+    result.type = kNodeTypeLoadGlobalVariable;
+    
+    xstrncpy(result.sname, info.sname, PATH_MAX);
+    result.sline = info.sline;
+    
+    result.mStringValue = string(var_name);
+    
+    result.left = null;
+    result.right = null;
+    result.middle = null;
+
+    return result;
+}
+
+static bool compile_load_global_variable(sCLNode* node, sCompileInfo* info)
+{
+    char* var_name = borrow node.mStringValue;
+    
+    if(!info.no_output) {
+        info.codes.append_int(OP_LOAD_GLOBAL_VARIABLE);
+        info.codes.append_nullterminated_str(var_name);
+        info.codes.alignment();
+    }
+    
+    info.stack_num++;
+
+    info.type = create_type("any", info.pinfo.types);
+
+    return true;
+}
+
 sCLNode* sNodeTree_create_load_variable(char* var_name, sParserInfo* info)
 {
     sCLNode* result = alloc_node(info);
@@ -2156,6 +2226,11 @@ static bool compile_create_object(sCLNode* node, sCompileInfo* info)
     sCLType* type = node.mType;
 
     if(!info.no_output) {
+        if(type == null || type.mClass == null) {
+            compile_err_msg(info, xsprintf("class not found on a creating object"));
+            return false;
+        }
+
         info.codes.append_int(OP_CREATE_OBJECT);
 
         string type_name = create_type_name(type);
@@ -3153,6 +3228,18 @@ bool compile(sCLNode* node, sCompileInfo* info)
             
         case kNodeTypeLoadVariable:
             if(!compile_load_variable(node, info)) {
+                return false;
+            }
+            break;
+
+        case kNodeTypeStoreGlobalVariable:
+            if(!compile_store_global_variable(node, info)) {
+                return false;
+            }
+            break;
+
+        case kNodeTypeLoadGlobalVariable:
+            if(!compile_load_global_variable(node, info)) {
                 return false;
             }
             break;

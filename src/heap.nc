@@ -321,6 +321,13 @@ static void mark(sVMInfo* info, unsigned char* mark_flg, sVMInfo* info)
         }
     }
 
+    gGlobalVars.each() {
+        CLVALUE value;
+        value.mObjectValue = it2;
+
+        mark_object(value.mObjectValue, mark_flg, info);
+    }
+
     mark_object(info->thrown_object.mObjectValue, mark_flg, info);
 }
 

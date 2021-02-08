@@ -85,6 +85,9 @@ bool sevenstars_list_set_value(CLVALUE** stack_ptr, sVMInfo* info)
     /// go ///
     set_list_value(self, right_value);
 
+    (*stack_ptr)->mObjectValue = self;
+    (*stack_ptr)++;
+
     return true;
 }
 
@@ -106,6 +109,9 @@ bool sevenstars_list_push_back(CLVALUE** stack_ptr, sVMInfo* info)
     /// go ///
     self_value.push_back(item_value);
 
+    (*stack_ptr)->mObjectValue = self;
+    (*stack_ptr)++;
+
     return true;
 }
 
@@ -124,6 +130,9 @@ bool sevenstars_list_reset(CLVALUE** stack_ptr, sVMInfo* info)
 
     /// go ///
     self_value.reset();
+
+    (*stack_ptr)->mObjectValue = self;
+    (*stack_ptr)++;
 
     return true;
 }
@@ -153,6 +162,9 @@ bool sevenstars_list_insert(CLVALUE** stack_ptr, sVMInfo* info)
     /// go ///
     self_value.insert(position_value, item_value);
 
+    (*stack_ptr)->mObjectValue = self;
+    (*stack_ptr)++;
+
     return true;
 }
 
@@ -177,6 +189,9 @@ bool sevenstars_list_delete(CLVALUE** stack_ptr, sVMInfo* info)
 
     /// go ///
     self_value.delete(position_value);
+
+    (*stack_ptr)->mObjectValue = self;
+    (*stack_ptr)++;
 
     return true;
 }
@@ -238,6 +253,9 @@ bool sevenstars_list_delete_range(CLVALUE** stack_ptr, sVMInfo* info)
 
     /// go ///
     self_value.delete_range(head_value, tail_value);
+
+    (*stack_ptr)->mObjectValue = self;
+    (*stack_ptr)++;
 
     return true;
 }

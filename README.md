@@ -1,6 +1,6 @@
 # Clover3 script language
 
-version 0.0.3
+version 0.5.0
 
 * 特徴
 
@@ -726,6 +726,19 @@ You can run a string at runtime with eval. You can use this and reflection to cr
 * shell mode
 
 You can write script like shell script
+
+* global variable
+
+グローバル変数は$変数名=式で定義します。読み込みは$変数名です。
+
+Global variables are defined by $variable name = expression. Read is $variable name.
+
+```
+clover3 > $AAA=123
+123
+clover3 > $AAA
+123
+```
 
 * クラスファイル
 

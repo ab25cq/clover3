@@ -1,6 +1,6 @@
 
 class int {
-    def set_value(value:int):void;
+    def set_value(value:int):int;
     def plus(right:int):int {
         self \+ right
     }
@@ -57,7 +57,7 @@ class system
 }
 
 class bool {
-    def set_value(value:bool):void;
+    def set_value(value:bool):bool;
     def to_int():int;
     def to_string():string;
     def to_command():command;
@@ -87,7 +87,7 @@ class bool {
 };
 
 class string {
-    def set_value(value:string):void;
+    def set_value(value:string):string;
     def equal(right:string?):bool;
     def not_equal(right:string?):bool;
     def to_command():command;
@@ -134,6 +134,9 @@ class buffer
     def length():int;
 
     def compare(right:buffer):int;
+    def equal(right:buffer):bool {
+        self.compare(right) == 0
+    }
 }
 
 class object {
@@ -175,7 +178,7 @@ class list<T>
     def not_equal(right:list<T>?):bool {
         !self.equal(right)
     }
-    def set_value(right:list<T>):void;
+    def set_value(right:list<T>):list<T>;
     def clone():list<T> {
         var result = new list<T>();
 
@@ -198,12 +201,12 @@ class list<T>
         buf.to_string()
     }
 
-    def push_back(item:T):void;
-    def reset():T;
-    def insert(position:int, item:T):void;
-    def delete(position:int): void;
+    def push_back(item:T):list<T>;
+    def reset():list<T>;
+    def insert(position:int, item:T):list<T>;
+    def delete(position:int): list<T>;
     def replace(position:int, item:T):list<T>;
-    def delete_range(head:int, tail:int):void;
+    def delete_range(head:int, tail:int):list<T>;
     def sublist(begin:int, tail:int):list<T>;
 
     def reverse(): list<T>;
@@ -309,14 +312,47 @@ class string
 class map<T>
 {
     def initialize():map<T>;
-    def insert(key:string, item:T):void;
+    def insert(key:string, item:T):map<T>;
     def at(key:string, default_value:T?):T?;
     def find(key:string):bool;
     def length():int;
-    def equal(right:map<T>?):bool;
-    def not_equal(right:map<T>?):bool;
-    def to_string():string;
     def keys():list<string>;
+    def to_string():string;
+    def equal(right:map<T>?):bool {
+        $_TMP_SELF = self;
+        $_TMP_RIGHT = right;
+        
+        $_TMP_RESULT = true;
+        
+        if(self.length() != right.length()) {
+            return false;
+        }
+
+        self.keys().each() {
+            $_TMP_KEY = it;
+            $_TMP_ITEM = $_TMP_SELF.at(it, null);
+
+            var right:map<T> = $_TMP_RIGHT;
+            
+            right.keys().each() {
+                var item = $_TMP_ITEM;
+                var item2 = $_TMP_RIGHT.at($_TMP_KEY, null);
+
+                if(item2 == null) {
+                    $_TMP_RESULT = false;
+                }
+
+                if(item != item2) {
+                    $_TMP_RESULT = false;
+                };
+            };
+        };
+
+        $_TMP_RESULT
+    }
+    def not_equal(right:map<T>?):bool {
+        !self.equal(right)
+    }
 }
 
 class tuple1<T>
@@ -543,7 +579,7 @@ class list<T>
 
 class regex 
 {
-    def set_value(value:regex):void;
+    def set_value(value:regex):regex;
     def to_string(): string;
     def to_command():command {
         self.to_string().to_command()

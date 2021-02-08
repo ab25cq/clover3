@@ -341,6 +341,9 @@ bool string_set_value(CLVALUE** stack_ptr, sVMInfo* info)
     /// go ///
     set_string_value(self, value_value);
 
+    (*stack_ptr)->mObjectValue = self;
+    (*stack_ptr)++;
+
     return true;
 }
 

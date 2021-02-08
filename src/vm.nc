@@ -4,6 +4,17 @@
 #include <sys/wait.h>
 
 int gSigInt;
+map<string, int>* gGlobalVars;
+
+void vm_init()
+{
+    gGlobalVars = borrow new map<string, int>.initialize();
+}
+
+void vm_final()
+{
+    delete gGlobalVars;
+}
 
 void vm_err_msg(CLVALUE** stack_ptr, sVMInfo* info, char* msg)
 {
@@ -784,7 +795,7 @@ bool vm(buffer* codes, CLVALUE* parent_stack_ptr, int num_params, int var_num, C
     }
 
     ready_for_vm_stack(stack, parent_stack_ptr, num_params, var_num, info);
-    
+
     while(p - head_codes < codes.len) {
         int op = *p;
         p++;
@@ -1332,6 +1343,40 @@ bool vm(buffer* codes, CLVALUE* parent_stack_ptr, int num_params, int var_num, C
                 p++;
 
                 *stack_ptr = stack[var_index];
+                stack_ptr++;
+                }
+                break;
+
+            case OP_STORE_GLOBAL_VARIABLE: {
+                char* str = (char*)p;
+                int len = strlen(str) + 1;
+
+                alignment(&len);
+
+                len = len / sizeof(int);
+
+                p += len;
+
+                CLVALUE value = *(stack_ptr-1);
+
+                gGlobalVars.insert(string(str), value.mObjectValue);
+                }
+                break;
+                
+            case OP_LOAD_GLOBAL_VARIABLE: {
+                char* str = (char*)p;
+                int len = strlen(str) + 1;
+
+                alignment(&len);
+
+                len = len / sizeof(int);
+
+                p += len;
+
+                CLVALUE value;
+                value.mObjectValue = gGlobalVars.at(str, null);
+
+                *stack_ptr = value;
                 stack_ptr++;
                 }
                 break;

@@ -1353,6 +1353,32 @@ static bool expression_node(sCLNode** node, sParserInfo* info)
             return false;
         }
     }
+    else if(*info->p == '$') {
+        info->p++;
+        skip_spaces_and_lf(info);
+
+        if(isalpha(*info->p) || *info->p == '_') {
+            var var_name = parse_word(info);
+            
+            if(*info->p == '=') {
+                info->p++;
+                skip_spaces_and_lf(info);
+                
+                sCLNode* exp = null;
+                if(!expression(&exp, info)) {
+                    return false;
+                };
+                
+                *node = sNodeTree_create_store_global_variable(var_name, exp, info);
+            }
+            else {
+                *node = sNodeTree_create_load_global_variable(var_name, info);
+            }
+        }
+        else {
+            parser_err_msg(info, "require var name");
+        }
+    }
     /// alnum ///
     else if((*info->p >= 'a' && *info->p <= 'z') || (*info->p >= 'A' && *info->p <= 'Z') || *info->p == '_')
     {

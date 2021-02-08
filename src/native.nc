@@ -27,6 +27,9 @@ bool int_set_value(CLVALUE** stack_ptr, sVMInfo* info)
 
     /// go ///
     set_int_value(self, value_value);
+
+    (*stack_ptr)->mObjectValue = self;
+    (*stack_ptr)++;
     
     return true;
 }
@@ -52,7 +55,10 @@ bool bool_set_value(CLVALUE** stack_ptr, sVMInfo* info)
     int value_value = get_int_value(value);
 
     /// go ///
-    set_int_value(self, value);
+    set_int_value(self, value_value);
+
+    (*stack_ptr)->mObjectValue = self;
+    (*stack_ptr)++;
     
     return true;
 }
