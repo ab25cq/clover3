@@ -1,6 +1,6 @@
 # Clover3 script language
 
-version 0.6.0
+version 1.0.0
 
 * 特徴
 
@@ -33,10 +33,10 @@ clover3 > map!("AAA", 1, "BBB", 2).to_string().to_command().less()
 4. It is also an object-oriented language. Includes classes, inheritance, generics, collections, etc.
 
 ```
-clover3 > list!(1,2,3,4,5).filter() { it > 3 }
+clover3 > [1,2,3,4,5].filter() { it > 3 }
 =>list(4,5)
 
-clover3 > list!(1,2,3,4,5).map() { it * 2 }
+clover3 > [1,2,3,4,5].map() { it * 2 }
 =>list(2,4,6,8,10)
 ```
 
