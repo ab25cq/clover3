@@ -12,7 +12,7 @@
 #include <dirent.h>
 #include <libgen.h>
 
-char* gVersion = "0.0.1";
+char* gVersion = "1.0.1";
 
 int main(int argc, char** argv)
 {
