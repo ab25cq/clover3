@@ -727,6 +727,13 @@ You can run a string at runtime with eval. You can use this and reflection to cr
 
 You can write script like shell script
 
+```
+echo aaa
+ls -al src/main.c
+```
+This is for one line shell script. 
+
+
 * global variable
 
 グローバル変数は$変数名=式で定義します。読み込みは$変数名です。
@@ -747,10 +754,3 @@ clover3 > $AAA
 * class file
 
 The class can be saved to a file with the save_class class name. The saved class can be loaded with the load_class class name. The saved file has the extension ssc. If you put the file in ~/.clover3 in your home directory, you can read the class file regardless of the location of the current directory.
-
-```
-echo aaa
-ls -al src/main.c
-```
-This is for one line shell script. 
-
