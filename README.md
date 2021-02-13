@@ -1,5 +1,7 @@
 # Clover3 script language
 
+interpreter implemented by neo-c
+
 version 1.0.1
 
 * 特徴
